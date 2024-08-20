@@ -1,0 +1,23 @@
+services:
+  tarantool1:
+    image: tarantool/tarantool:latest
+    networks:
+      - vk_project_mynet
+    ports:
+      - "3301:3301"
+    volumes:
+      - ./tarantool_init.lua:/opt/tarantool_init.lua
+    command: tarantool /opt/tarantool_init.lua
+
+  flask-app:
+    build: .
+    networks:
+      - vk_project_mynet
+    ports:
+      - "5000:5000"
+    depends_on:
+      - tarantool1
+
+networks:
+  vk_project_mynet:
+    driver: bridge
